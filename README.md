@@ -18,7 +18,7 @@ Clone the repo and compile the sam parsing code by running make. It should make 
 
 
 ## BAC libraries
-This pipeline assumes you have a file named bacs.fasta in the folder where you are running from your genome to validate. There are some BAC libraries in NCBI for several human genomes, for example <a href="">CHM13</a>, NA12878, and HG0733.
+This pipeline assumes you have a file named bacs.fasta in the folder where you are running from your genome to validate. There are some BAC libraries in NCBI for several human genomes, for example <a href="https://www.ncbi.nlm.nih.gov/nuccore/?term=VMRC59+and+complete">CHM13</a>, <a href="https://www.ncbi.nlm.nih.gov/nuccore/?term=VMRC53+and+complete">NA12878</a>, and <a href="https://www.ncbi.nlm.nih.gov/nuccore/?term=VMRC62+and+complete">HG0733</a>.
 
 ## Usage
 

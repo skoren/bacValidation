@@ -38,12 +38,12 @@ If you want to validate on a subset of BACs, e.g. ones coming from the unique re
 BACs closed: 280 (82.1114) BASES 42501309 (82.4753)
 Median:		 99.98025 
 MedianQV:	 37.04433 
-Mean:		   99.80281 
+Mean:		 99.80281 
 MeanQV:		 27.05109 
 ***** STATS IGNORING INDELS ********************
 Median:		 100 
 MedianQV:	 Inf 
-Mean:		   99.96021 
+Mean:		 99.96021 
 MeanQV:		 34.00199 
 ```
 

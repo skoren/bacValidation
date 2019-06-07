@@ -28,6 +28,8 @@ There is a single shell script, getStats.sh which takes one argument, a fasta fi
 
 If you want to validate on a subset of BACs, e.g. ones coming from the unique regions of the genome or you have higher confidence in, create a file named goodBacs listing the IDs from the fasta file (up to the first space). The same getStats.sh script above will report stats only on this subset of BACs. You can do this after running the pipeline, the mappings won't be re-generated.
 
+You can also adjust the default break length when mapping (which defaults to 2kb) to any other value by passing it as the second parameter (e.g. sh getStats.sh asm.fasta 5000 will use a break length of 5kb). This will map more BACs in single pieces but will decrease the identity since it will tolerage more noise in the alignment.
+
 ## Example output for <a href="https://github.com/nanopore-wgs-consortium/CHM13">T2T v0.6</a> assembly
 
 ```

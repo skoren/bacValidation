@@ -1,7 +1,13 @@
 #!/bin/bash
 
 ASM=$1
+BREAK_LEN=2000
+if [ $# -ge 2 ]; then
+   BREAK_LEN=$2
+fi
+
 PREFIX=`echo $1 |sed s/.fasta//g`
+PREFIX="${PREFIX}_${BREAK_LEN}"
 SCRIPT_PATH=$BASH_SOURCE
 SCRIPT_PATH=`dirname $SCRIPT_PATH`
 
@@ -24,8 +30,8 @@ if [ ! -e $ASM ]; then
 fi
 
 if [ ! -e $PREFIX.txt ]; then
-   echo "Starting mapping...."
-   minimap2 --secondary=no -t $cores -ax asm20 -r 2000 $ASM bacs.fasta > $SAM
+   echo -ne "Starting mapping for asm $ASM using a break len of $BREAK_LEN...."
+   minimap2 --secondary=no -t $cores -ax asm20 -r $BREAK_LEN $ASM bacs.fasta > $SAM
    # do this bam back to sam to add header in case asm is >4gb
    samtools view -b -T $ASM -o $PREFIX.tmp $SAM
    samtools view -h $PREFIX.tmp > $SAM

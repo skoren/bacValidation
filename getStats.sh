@@ -6,6 +6,12 @@ if [ $# -lt 1 ]; then
    exit
 fi
 
+haveR=`which R 2>/dev/null |wc -l`
+if [ $haveR -eq 0 ]; then
+   echo "Error: no R found in path, please add R to your path before running"
+   exit
+fi
+
 haveBed=`which bedtools 2>/dev/null |wc -l`
 if [ $haveBed -eq 0 ]; then
    echo "Error: no bedtools found in path, please add bedtools to your path before running"
@@ -73,7 +79,7 @@ bp=`cat bacs.fasta.fai |awk '{SUM+=$2; } END {print SUM}'`
 # the groupby will give a list of mapping positions on each contig, like this:
 # AC275637.1 tig00000007     0,151967,152735,57006   49467,153339,173266,139925      173266
 # then we just go through and sum up the intervals and divide
-cat $i |awk '{print $1"\t"$6"\t"$7"\t"$7-$6"\t"$2"\t"$8}'|sort -gk1 |sort -k1,1 -k 5,5 |bedtools groupby -g 1,5 -c 2,3,6 -o collapse,collapse,max -i - |awk -F "\t" '{s=split($3, S, ","); e=split($4, E, ","); if (e != s) { print "Error: non-matching intervals"; } else { SUM=0; for (i = 1; i <= s; i++) { SUM+=E[i]-S[i]; } if (SUM/$NF > 0.95) print $1}}'|sort |uniq > $PREFIX.attempted
+cat $PREFIX.txt |awk '{print $1"\t"$6"\t"$7"\t"$7-$6"\t"$2"\t"$8}'|sort -gk1 |sort -k1,1 -k 5,5 |bedtools groupby -g 1,5 -c 2,3,6 -o collapse,collapse,max -i - |awk -F "\t" '{s=split($3, S, ","); e=split($4, E, ","); if (e != s) { print "Error: non-matching intervals"; } else { SUM=0; for (i = 1; i <= s; i++) { SUM+=E[i]-S[i]; } if (SUM/$NF > 0.95) print $1}}'|sort |uniq > $PREFIX.attempted
 
 echo "******************* BAC SUMMARY ******************"
 echo " TOTAL    : $total"

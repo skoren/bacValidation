@@ -5,6 +5,7 @@ BAC-based validation of assemblies
 - minimap2 >= 2.17
 - R >= 3.5
 - samtools >= 1.9
+- bedtools >= 2.25
 - GCC >= 4.8
 
 These must all be available in your path.
@@ -37,7 +38,7 @@ You can also adjust the default break length when mapping (which defaults to 2kb
  TOTAL    : 341
  BP       : 51532183
 ************** Statistics for: chm13.draft_v0.6.fasta ****************
-BACs closed: 280 (82.1114) BASES 42501309 (82.4753)
+BACs closed: 280 (82.1114); BACs attempted: 310 %good = 90.3226; BASES 42501309 (82.4753)
 Median:		 99.98025 
 MedianQV:	 37.04433 
 Mean:		 99.80281 
@@ -48,4 +49,3 @@ MedianQV:	 Inf
 Mean:		 99.96021 
 MeanQV:		 34.00199 
 ```
-

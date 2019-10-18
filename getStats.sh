@@ -35,6 +35,10 @@ BREAK_LEN=2000
 if [ $# -ge 2 ]; then
    BREAK_LEN=$2
 fi
+MAX_DIST=1000
+if [ $# -ge 3 ]; then
+   MAX_DIST=$3
+fi
 
 PREFIX=`echo $1 |sed s/.fasta//g`
 PREFIX="${PREFIX}_${BREAK_LEN}"
@@ -79,7 +83,9 @@ bp=`cat bacs.fasta.fai |awk '{SUM+=$2; } END {print SUM}'`
 # the groupby will give a list of mapping positions on each contig, like this:
 # AC275637.1 tig00000007     0,151967,152735,57006   49467,153339,173266,139925      173266
 # then we just go through and sum up the intervals and divide
-cat $PREFIX.txt |awk '{if ($10 >= 5000 && $12-$11 >= 5000) print $1"\t"$6"\t"$7"\t"$7-$6"\t"$2"\t"$8}'|sort -gk1 |sort -k1,1 -k 5,5 |bedtools groupby -g 1,5 -c 2,3,6 -o collapse,collapse,max -i - |awk -F "\t" '{s=split($3, S, ","); e=split($4, E, ","); if (e != s) { print "Error: non-matching intervals"; } else { SUM=0; for (i = 1; i <= s; i++) { SUM+=E[i]-S[i]; } if (SUM/$NF > 0.95) print $1}}'|sort |uniq > $PREFIX.attempted
+echo -ne "Checking attempted with maximum distance from contig end of $MAX_DIST bp.."
+cat $PREFIX.txt |awk -v MAX_DIST=$MAX_DIST '{if ($10 >= MAX_DIST && $12-$11 >= MAX_DIST) print $1"\t"$6"\t"$7"\t"$7-$6"\t"$2"\t"$8}'|sort -gk1 |sort -k1,1 -k 5,5 |bedtools groupby -g 1,5 -c 2,3,6 -o collapse,collapse,max -i - |awk -F "\t" '{s=split($3, S, ","); e=split($4, E, ","); if (e != s) { print "Error: non-matching intervals"; } else { SUM=0; for (i = 1; i <= s; i++) { SUM+=E[i]-S[i]; } if (SUM/$NF > 0.95) print $1}}'|sort |uniq > $PREFIX.attempted
+echo "Done"
 
 echo "******************* BAC SUMMARY ******************"
 echo " TOTAL    : $total"
@@ -87,6 +93,11 @@ echo " BP       : $bp"
 
 echo "************** Statistics for: $ASM ****************"
 cat $PREFIX.txt |awk '{if (($7-$6)/$8 > 0.995) print $1}'|sort |uniq |awk '{print $1}' > $PREFIX.resolved 
+# add in any resolved that got filtered by the too-close criteria to the ends above
+cat $PREFIX.resolved $PREFIX.attempted |sort |uniq > $PREFIX.tmp
+mv $PREFIX.tmp $PREFIX.attempted
+
+# now we get the stats
 ATTEMPTED=`cat $PREFIX.attempted |wc -l`
 FAILED=`cat $PREFIX.attempted |grep -v -f $PREFIX.resolved |wc -l`
 DONE=`cat $PREFIX.txt |awk '{if (($7-$6)/$8 > 0.995) print $1}'|sort |uniq |awk '{print $1}' |wc -l`
